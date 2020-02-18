@@ -36,13 +36,14 @@ loginUser = (email,password) => {
 
   try{
     firebase.auth().signInWithEmailAndPassword(email,password).then(function(user){
-      console.log(user).then(this.props.navigation.navigate("StudentDash"))
+      console.log(user).then(this.props.navigation.navigate("StudentDashboard"));
 
     })
   }
   catch(error)
   {
-    console.log(error.toString())
+    console.log(error)
+    
   }
 }
 
@@ -113,7 +114,7 @@ return (
               <TouchableOpacity
               activeOpacity = { 0.7 }
               style = { styles.btn }
-              onPress={()=> this.loginUser(this.state.email,this.state.password)}>
+              onPress={()=> this.signUpUser(this.state.email,this.state.password)}>
                     <Image
                         style={ styles.imgStyle }
                         source={require('../img/checked.png')}

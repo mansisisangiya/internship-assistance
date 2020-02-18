@@ -21,21 +21,11 @@ import TeacherRequestForm from './src/Components/Teacher/TeacherRequestForm';
 import TeacherhStudentStatus from './src/Components/Teacher/TeacherhStudentStatus';
 import TeacherCompanies from './src/Components/Teacher/TeacherCompanies';
 
-// import TeacherCompanies from './src/Components/Teacher/TeacherCompanies';
-// import BreakFast from './src/Components/BreakFast';
-// import Lunch from './src/Components/Lunch';
-// import Snacks from './src/Components/Snacks';
-// import Dinner from './src/Components/Dinner';
-// import MealPlanned from './src/Components/MealPlanned';
-// //import test from './src/Components/test'
-// import Home from  './src/Components/Home'
- //import StudentDashboard  from './src/Components/Student/StudentDashboard';
- //import test from './src/Components/Students/test';
 
 import * as firebase from 'firebase';
 
 
-// initialize firebbase
+// initialize firebbase0o
 
 const firebaseConfig = {
 
@@ -47,19 +37,11 @@ const firebaseConfig = {
          
 
 };
-firebase.initializeApp(firebaseConfig);
-firebase.database().ref('studentid/001').set(
-  {
-    name:'manthan',
-    email:'18ee003@charusat.edu.in'
-  }
-).then(()=>{
-  console.log('inserted');
-}).catch((error) =>{
-
-  console.log('error');
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
 }
-);
+
+
 const RootStack = createStackNavigator(
   {
      //screens
