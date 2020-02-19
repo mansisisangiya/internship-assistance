@@ -13,53 +13,60 @@ import {
 import Header from './Header'
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as firebase from 'firebase';
+import Login from './Login';
 
 export default class SignUp extends React.Component {
 
-  constructor(props)
-  {
-    super (props)
-  
-  this.state = {
-    username: '', password: '', email: '',institute:'',year:'',studentId:''
-  }
-}
-  onChangeText = (key, val) => {
-    this.setState({ [key]: val })
-  }
- 
-
-  signUpUser =(email,password) => {
+  constructor(props) {
+    super(props)
+    this.state =( {
+    email:'',
+    password:' ',
+    username:'',
+    studentId:'',
+    year:'',
+    institute: ''
+    })
+    }
+    
+    signUpUser =(email,password) => {
     try{
       if(this.state.password.length<6)
       {
         alert("please enter atleast 6 characters ")
         return;
-
       }
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          firebase.auth().currentUser.sendEmailVerification().then(
-            alert("DSSFSDA...")
-          )
-          console.log('User email: ', user.email)
-        }
-      });
+       let currentUser = this.state.email
+       firebase.auth().createUserWithEmailAndPassword(email,password)
+      firebase.auth().currentUser.sendEmailVerification().then(function() {
+           Alert.alert("Please check Your email.")
+          this.props.navigation.navigate('Login',{
+            TYPE: this.state.email.Type,  
+            NAME:  this.state.email.Name,    
+       }, function(error) {
+           Alert.alert("Network Error")})
+      //  }).then(function(){
+      //      if(!emailVerified	){
+      //        Alert.alert("First verify mail.")
+      //      }
+      //      else{
+      //           firebase.auth().createUserWithEmailAndPassword(email,password)
+      //      }
+      //     });
        
-
-      }
+    }
     catch(error)
     {
       console.log(error.toString())
     }
-  }
-
+    }
       writeUserData=(email,studentId,username,institute,year)=> {
         var database = firebase.database(); 
-      firebase.database().ref('email'/+ studentId).set({
+        firebase.database().ref('email'/+ studentId).set({
         username: name,
         email: email,
         Year: year,
+        studentId:studentId,
         institute:institute
       });
     }
@@ -83,7 +90,7 @@ export default class SignUp extends React.Component {
           placeholder='Email'
           autoCapitalize="none"
           placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('email', val)}
+          onChangeText={(email)=>this.setState({email})}
         />
         <TextInput
           style={styles.input}
@@ -91,21 +98,21 @@ export default class SignUp extends React.Component {
           secureTextEntry={true}
           autoCapitalize="none"
           placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('password', val)}
+          onChangeText={(password)=>this.setState({password})}
         />
         <TextInput
           style={styles.input}
           placeholder='ID'
           autoCapitalize="none"
           placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('id', val)}
+          onChangeText={(studentId)=>this.setState({studentId})}
         />
         <TextInput
           style={styles.input}
-          placeholder='Phone Number'
+          placeholder='Enter Name'
           autoCapitalize="none"
           placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('phone_number', val)}
+          onChangeText={(username)=>this.setState({username})}
         />
 
       <ModalDropdown 
@@ -117,7 +124,7 @@ export default class SignUp extends React.Component {
           dropdownTextStyle={styles.textStyle2}
           dropdownStyle={styles.dropContainer}
           showsVerticalScrollIndicator={true}
-          onChangeText={val => this.onChangeText('institute', val)}
+          onChangeText={(institute)=>this.setState(institute)}
           />
           <ModalDropdown 
           style={styles.input}       
@@ -128,7 +135,7 @@ export default class SignUp extends React.Component {
           dropdownTextStyle={styles.textStyle2}
           dropdownStyle={styles.dropContainer}
           showsVerticalScrollIndicator={true}
-          onChangeText={val => this.onChangeText('year', val)}
+          onChangeText={(year)=>this.year}
           />
 
           <TouchableOpacity  style = { styles.signup }  

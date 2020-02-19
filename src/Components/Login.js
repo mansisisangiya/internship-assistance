@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Button, Text, Alert,ImageBackground,Image,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Button, Text, Alert,ImageBackground,Image,TouchableOpacity} from 'react-native';
 
 import Header from './Header';
 import * as firebase from 'firebase';
@@ -36,7 +36,18 @@ loginUser = (email,password) => {
 
   try{
     firebase.auth().signInWithEmailAndPassword(email,password).then(function(user){
-      console.log(user).then(this.props.navigation.navigate("StudentDashboard"));
+      this.props.navigation.navigate("StudentDashboard");
+      writeUserData=(email,studentId,username,institute,year)=> {
+        var database = firebase.database(); 
+        firebase.database().ref('email'/+ studentId).set({
+        username: name,
+        email: email,
+        Year: year,
+        studentId:studentId,
+        institute:institute
+      });
+    }
+
 
     })
   }
@@ -114,7 +125,7 @@ return (
               <TouchableOpacity
               activeOpacity = { 0.7 }
               style = { styles.btn }
-              onPress={()=> this.signUpUser(this.state.email,this.state.password)}>
+              onPress={()=> this.loginUser(this.state.email,this.state.password)}>
                     <Image
                         style={ styles.imgStyle }
                         source={require('../img/checked.png')}

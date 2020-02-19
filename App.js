@@ -66,7 +66,7 @@ const RootStack = createStackNavigator(
    },
   {
     //Run First
-    initialRouteName: 'Registration',
+    initialRouteName: 'Login',
     headerMode: 'none',
   }
 );

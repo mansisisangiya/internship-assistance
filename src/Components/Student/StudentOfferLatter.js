@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Button,ImageBackground ,StyleSheet,TouchableOpacity,Alert} from 'react-native'
 import HeaderArrow from '../HeaderArrow';
-// import DocumentPicker from 'react-native-document-picker';
+import DocumentPicker from 'react-native-document-picker';
 
 export default class StudentOfferLatter extends React.Component {
   constructor(props) {
