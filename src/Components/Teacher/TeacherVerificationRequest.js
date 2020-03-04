@@ -13,25 +13,106 @@ import {
 } from 'react-native';
 import CardView from 'react-native-cardview' ;
 import HeaderArrow from '../HeaderArrow';
-export default class TeacherVerificationRequest extends Component {
+import * as firebase from 'firebase';
+import { Card } from 'native-base';
+
+
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyDFE0pEomenVlB8-JuHcAnICYd3hQfRyOY",
+  authDomain: "internship-assistance.firebaseapp.com",
+  databaseURL: "https://internship-assistance.firebaseio.com",
+  projectId: "internship-assistance",
+  storageBucket: "internship-assistance.appspot.com",
   
+       
+
+};
+if (!firebase.apps.length) {
+firebase.initializeApp(firebaseConfig);
+}
+ 
+
+const database = firebase.database();
+//const student = database.child('student');
+
+
+
+export default class TeacherVerificationRequest extends Component {
+
+constructor(props)
+{
+  super(props);
+  this.state = ( {
+   
+    items:[],
+    studentid:'',
+    Registrationdetails:'',
+     categories:'',
+
+
+    })
+
+
+}
+
+componentDidMount() {
+  //console.log("hello")
+  database.ref("Student/").on("value", async function(snapshot) {
+  //   this.setState({
+ let snap = JSON.stringify(snapshot)
+  let data = JSON.parse(snap)
+ 
+  //console.log( Registrationdetails);
+ 
+  var studentids = Object.keys(data);
+  console.log(studentids);
+  for(var i =0; i<studentids.length;i++){
+    var sid = studentids[i];
+    var username =data[sid].Registrationdetails.Username;
+    console.log(sid,username);
+  }
+
+}
+
+
+
+);
+
+
+
+
+ 
+}
   render() {
     return(
-       
-    
-
+  
   <View styles={styles.container}>
     <HeaderArrow
         headerText = "Student Request"
-        onPressBack = {() => this.props.navigation.navigate("StudentDashboard")}
+        onPressBack = {() => this.props.navigation.navigate("TeacherDashboard")}
       /> 
       <ImageBackground source={require('../../img/dash.jpg')} style={{width: '100%', height: '100%',alignItems:'center'}}>
-        <View style={styles.headContiner}>       
-          
-                               
+        <View style={styles.headContiner}>                         
           <View style={styles.Contain}>            
                 <View style={styles}>
-               
+                  <TouchableOpacity>
+                 <CardView style={styles.cardViewStyle}>
+                     
+                    
+                 </CardView>
+          
+      
+                      
+
+                 
+                  
+
+                    
+
+                  </TouchableOpacity>
+              
                
                 </View>                
               

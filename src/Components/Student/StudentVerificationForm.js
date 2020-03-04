@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Button,ScrollView,ImageBackground,Image,Alert,TouchableOpacity,Text} from 'react-native';
 import t from 'tcomb-form-native';
 import HeaderArrow from '../HeaderArrow';
+import * as firebase from 'firebase';
 
 
 const Name = t.subtype(t.Str, (cname) => {
   const reg = /^([a-zA-Z]+\s)*[a-zA-Z]+$/;
   return reg.test(cname);
 });
+
 
 const Company_Website = t.subtype(t.Str, (cweb) => {
   const reg =/^(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
@@ -82,80 +84,101 @@ const options = {
   fields: {
     cname: {
       error: 'Only Characters allowed',
-      label:'Company Name',      
-    },
+      label:'Company Name',   
+      ref:'1',
+      onSubmitEditing :this.focusNextField('2')
+
+      },
     cweb: {
-      error: 'Not Valid Website(eg."www.sample.com")',
+      error: 'Not Valid Website(eg."sample.com")',
       label:'Company Website',
+      ref:'2',
+      
     },
     cadd: {
       error: 'Required Field',
       label:'Company Address',
+      ref:'3',
     },    
     noe: {
       error: 'Only Numbers allowed',
       label:'Number Of Employes',
       keyboardType:'numeric',
+      ref:'4',
     },
     nob: {
       error: 'Only Numbers allowed',
       label:'Number Of Branches ',
       keyboardType:'numeric',
+      ref:'5',
     },
     hof: {
       error: 'Required Field',
       label:'Head Office Address',
+      ref:'6',
     },  
     ctname: {
       error: 'Required Field',
       label:'Contact Person Name',
+      ref:'7',
     },
     ctphn: {
       error: 'Not Valid(eg.9106296670)',
       label:'Contact Person Phone Number',
       keyboardType:'phone-pad', 
+      ref:'8'
 
     },
     cemail: {
       error: 'Not Valid(eg.abc@gmail.com)',
       label:'Contact Person Email Id',
       keyboardType:'email-address',
+      ref:'9',
       //placeholder:'abc@gmail.com',
     },    
     hname: {
       error: 'Required Field',
       label:'HR Name',
+      ref:'10',
     },
     hphn: {
       error: 'Not Valid(eg.9106296670)',
       label:'HR Phone Number ',
       keyboardType:'phone-pad',
+      ref:'11',
     },
     hemail: {
       error: 'Not Valid(eg.17dit052@charusat.edu.in)',
       label:'HR Email Id',
       keyboardType:'email-address',
+      ref:'12',
     },  
     tec: {
       error: 'Only Characters allowed',
       label:'Technology:',
+      ref:'13',
     },
     cp: {
       error: 'Only Characters allowed',
       label:'Current Projects',
+      ref:'14',
 
     },
     clic: {
       error: 'Only Numbers allowed',
       label:'Clients Of Company',
+      keyboardType:'numeric',
+      ref:'15',
     },
     how: {
       error: 'Only Characters allowed',
       label:'How You Get This Company?',
+      ref:'16',
     },
     reason: {
       error: 'Only Characters allowed`',
       label:'Reason To Choose this company',
+      ref:'17',
     },  
    // approver: {
    //    error: 'empty',
@@ -167,61 +190,29 @@ const options = {
 
 export default class StudentVerificationForm extends Component {
 
-handleSubmit = () => {
+  focusNextField(nextField) {
+    this.refs[nextField].focus();
+  }
+
+
+  handleSubmit=()=>{
     console.log("In the handlesubmit...");
+    
+    const formdetails = this._form.getValue();  
+    console.log("value:",formdetails);   
 
-    const value = this._form.getValue();
-    console.log("value:",value);   
-
-    if(value!=null){ 
-
-
-   fetch('http://192.168.43.170/cv/newform.php', {
-            method: 'POST',
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            },
-body: JSON.stringify({
-jcname: value.cname,
-jcweb: value.cweb,
-jcadd:value.cadd,
-jne:value.noe,
-jnb:value.nob,
-jhad:value.hof,
-jcpn:value.ctname,
-jcpp:value.ctphn,
-jcpe:value.cemail,
-jhn:value.hname,
-jhp:value.hphn,
-jhe:value.hemail,
-jtech:value.tec,
-jcp:value.cp,
-jcc:value.clic,
-jhow:value.how,
-jrsn:value.reason,
-
-})
-}).then(console.log(JSON.stringify({
-jcname: value.cname,
-jcweb: value.cweb,
-jcadd:value.cadd,
-jne:value.noe,
-jnb:value.nob,
-jhad:value.hof,
-jcpn:value.ctname,
-jcpp:value.ctphn,
-jcpe:value.cemail,
-jhn:value.hname,
-jhp:value.hphn,
-})))
-    .then((response) => response.json())
-.then((responseJson) => {
-// Showing response message coming from server after inserting records.
-Alert.alert(responseJson);
-}).catch((error) => {
-console.error(error);
-});
+    if(formdetails!=null){ 
+      
+      {
+        firebase.database().ref('Student/').child(studentid).push(formdetails).then((data)=>{
+            //success callback
+            console.log('data ', data)
+        }).catch((error)=>{
+            //error callback
+            console.log('error ', error)
+        })
+        this.props.navigation.navigate('StudentDashboard')
+    }
 
 }
     

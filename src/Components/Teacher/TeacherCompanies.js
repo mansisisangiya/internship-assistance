@@ -25,7 +25,7 @@ export default class TeacherCompanies extends Component {
     <View styles={styles.container}>
     <HeaderArrow
         headerText = "Company Status"
-        onPressBack = {() => this.props.navigation.navigate("StudentDashboard")}
+        onPressBack = {() => this.props.navigation.navigate("TeacherDashboard")}
       /> 
       <ImageBackground source={require('../../img/dash.jpg')} style={{width: '100%', height: '100%',alignItems:'center'}}>
         <View style={styles.headContiner}> 

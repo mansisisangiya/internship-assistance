@@ -15,45 +15,33 @@ password:' '
 })
 }
 
-signUpUser =(email,password) => {
-try{
-  if(this.state.password.length<6)
-  {
-    alert("please enter atleast 6 characters ")
-    return;
-  }
-
-  firebase.auth().createUserWithEmailAndPassword(email,password)
-}
-catch(error)
-{
-  console.log(error.toString())
-}
-}
-
-loginUser = (email,password) => {
-
-
-  try{
-    firebase.auth().signInWithEmailAndPassword(email,password).then(function(user){
-      this.props.navigation.navigate("StudentDashboard");
-      writeUserData=(email,studentId,username,institute,year)=> {
-        var database = firebase.database(); 
-        firebase.database().ref('email'/+ studentId).set({
-        username: name,
-        email: email,
-        Year: year,
-        studentId:studentId,
-        institute:institute
-      });
+focusNextField(nextField) {
+      this.refs[nextField].focus();
     }
 
 
-    })
+loginUser = (email,password) => {
+
+  try{
+    var user = firebase.auth().currentUser;    
+    console.warn("user:",user)
+
+if (user != null) { 
+  if(user.emailVerified==true){
+    // alert("sucess..")
+     this.props.navigation.navigate('StudentDashboard')
+    .catch(error => Alert.alert("ERROR",error))
   }
+  else{
+   alert('First verify mail..')
+  }
+  
+  }
+ }
+  
   catch(error)
   {
-    console.log(error)
+    console.warn(error)
     
   }
 }

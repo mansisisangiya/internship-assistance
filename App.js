@@ -18,7 +18,7 @@ import StudentProvidedCompany from './src/Components/Student/StudentProvidedComp
 import TeacherDashboard from './src/Components/Teacher/TeacherDashboard';
 import TeacherVerificationRequest from './src/Components/Teacher/TeacherVerificationRequest';
 import TeacherRequestForm from './src/Components/Teacher/TeacherRequestForm';
-import TeacherhStudentStatus from './src/Components/Teacher/TeacherhStudentStatus';
+import TeacherhStudentStatus from './src/Components/Teacher/TeacherStudentStatus';
 import TeacherCompanies from './src/Components/Teacher/TeacherCompanies';
 
 
@@ -66,7 +66,7 @@ const RootStack = createStackNavigator(
    },
   {
     //Run First
-    initialRouteName: 'Login',
+    initialRouteName: 'Registration',
     headerMode: 'none',
   }
 );

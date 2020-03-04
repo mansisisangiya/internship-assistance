@@ -1,4 +1,3 @@
-// SignUp.js
 import React from 'react'
 import {
   View,
@@ -11,9 +10,13 @@ import {
   Alert
 } from 'react-native'
 import Header from './Header'
+
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as firebase from 'firebase';
 import Login from './Login';
+
+
+
 
 export default class SignUp extends React.Component {
 
@@ -25,51 +28,149 @@ export default class SignUp extends React.Component {
     username:'',
     studentId:'',
     year:'',
-    institute: ''
+    institute: '',
+    instituteOptions:['CE','CSE','IT'],
+    yearOptions:['2','3','4']
     })
     }
+   
+    focusNextField(nextField) {
+      this.refs[nextField].focus();
+    }
+
     
-    signUpUser =(email,password) => {
+checkValidation=()=>{
+  console.warn('in the...')
+  const {
+  email,    
+  password,
+  studentId,
+  username,
+  year,
+ institute,          
+} = this.state;
+
+  let isValid = true
+  const regEmail =/^[a-zA-Z0-9]*@charusat.edu.in$/
+  const regId= ''
+ 
+
+
+   if (email === "") {
+  isValid = false;
+  Alert.alert("Alert", "Please enter Email");
+}else if(regEmail.test(email)=== false && isValid){
+  isValid=false;
+  Alert.alert("Please Enter email in correct form", "eg.17dit052@charusat.edu.in" )
+}
+
+
+if (password === "" && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please enter Password");
+} else if (password.length < 8 && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please enter at least 8 character");
+}
+
+if ( studentId=== "" && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please enter ID");
+} else if(regId.test(studentId)=== false && isValid) {
+  isValid = false;
+  Alert.alert("Please Enter Id in correct form", "eg.17dit052");
+}
+
+if (username === "" && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please enter Name");
+}
+if (institute === "" && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please Select institute");
+}
+if (year=== "" && isValid) {
+  isValid = false;
+  Alert.alert("Alert", "Please enter Year");
+}
+
+if (isValid) {
+  this.signUpUser();
+}
+}    
+    async signUpUser(email,password) {
     try{
       if(this.state.password.length<6)
       {
         alert("please enter atleast 6 characters ")
         return;
       }
-       let currentUser = this.state.email
-       firebase.auth().createUserWithEmailAndPassword(email,password)
-      firebase.auth().currentUser.sendEmailVerification().then(function() {
-           Alert.alert("Please check Your email.")
-          this.props.navigation.navigate('Login',{
-            TYPE: this.state.email.Type,  
-            NAME:  this.state.email.Name,    
-       }, function(error) {
-           Alert.alert("Network Error")})
-      //  }).then(function(){
-      //      if(!emailVerified	){
-      //        Alert.alert("First verify mail.")
-      //      }
-      //      else{
-      //           firebase.auth().createUserWithEmailAndPassword(email,password)
-      //      }
-      //     });
-       
+        
+       /*firebase.auth().createUserWithEmailAndPassword(email,password)
+       Alert.alert("user creaed")
+      
+       console.log("USER:",user)
+        user.sendEmailVerification().then(function() {
+           Alert.alert("check mail..")  
+         }).catch(function(error) {
+            Alert.alert("error..") // An error happened.
+});      */
+          await  firebase.auth().createUserWithEmailAndPassword(email,password)                       
+              //If a user is successfully created with an appropriate email
+              studentid = this.state.studentId;
+            var user = firebase.auth().currentUser
+            if (firebase.auth().currentUser != null){
+              user.sendEmailVerification();
+              Alert.alert("check mail..")
+              this.props.navigation.navigate('Login')
+             // this.props.navigation.navigate('StudentVerificationForm', {
+                //studentid
+            //  });
+              console.log(studentid);
+              console.log("for firebase...");
+              const Registrationdetails=
+               ({"Email": this.state.email,"Username":this.state.username,"StudentID":this.state.studentId
+                                            ,"Year":this.state.year,"Institute":this.state.institute})
+
+              
+          
+            console.log("value:", Registrationdetails);   
+         
+      {
+        firebase.database().ref('Student/').child(studentid).set(
+          {
+            Registrationdetails
+        }).then((data)=>{
+            //success callback
+            console.log('data ' , data)
+        }).catch((error)=>{
+            //error callback
+            console.log('error firebase ' , error)
+        })
     }
+            
+              
+                
+            
+              
+    
+
+
+            }
+           
+            else{
+              Alert.alert("error..")
+            }
+           
+        }
     catch(error)
     {
       console.log(error.toString())
     }
     }
-      writeUserData=(email,studentId,username,institute,year)=> {
-        var database = firebase.database(); 
-        firebase.database().ref('email'/+ studentId).set({
-        username: name,
-        email: email,
-        Year: year,
-        studentId:studentId,
-        institute:institute
-      });
-    }
+     
+  
+  
 
 
     
@@ -91,55 +192,64 @@ export default class SignUp extends React.Component {
           autoCapitalize="none"
           placeholderTextColor='white'
           onChangeText={(email)=>this.setState({email})}
+          onSubmitEditing={() => this.focusNextField('1')}
         />
         <TextInput
+          ref='1'
           style={styles.input}
           placeholder='Password'
           secureTextEntry={true}
           autoCapitalize="none"
           placeholderTextColor='white'
           onChangeText={(password)=>this.setState({password})}
+          onSubmitEditing={() => this.focusNextField('2')}
         />
         <TextInput
+          ref='2'
           style={styles.input}
           placeholder='ID'
           autoCapitalize="none"
           placeholderTextColor='white'
           onChangeText={(studentId)=>this.setState({studentId})}
+          onSubmitEditing={() => this.focusNextField('3')}
         />
         <TextInput
+          ref='3'
           style={styles.input}
           placeholder='Enter Name'
           autoCapitalize="none"
           placeholderTextColor='white'
           onChangeText={(username)=>this.setState({username})}
+          
         />
 
-      <ModalDropdown 
-          style={styles.input}       
+     
+         <ModalDropdown          
+          style={styles.input}      
           defaultValue=" Select Institute"
           placeholderTextColor='white'
-          options={['CE', 'IT','CSE']}
+          options={this.state.instituteOptions}
           textStyle={styles.textStyle}
           dropdownTextStyle={styles.textStyle2}
           dropdownStyle={styles.dropContainer}
           showsVerticalScrollIndicator={true}
-          onChangeText={(institute)=>this.setState(institute)}
+          onSelect ={(value) => this.setState({institute: (String(this.state.instituteOptions[value]))})}         
           />
-          <ModalDropdown 
-          style={styles.input}       
+          <ModalDropdown         
+          style={styles.input}      
           defaultValue="Select Year"
           placeholderTextColor='white'
-          options={['2','3','4']}
+          options={this.state.yearOptions}
           textStyle={styles.textStyle}
           dropdownTextStyle={styles.textStyle2}
           dropdownStyle={styles.dropContainer}
           showsVerticalScrollIndicator={true}
-          onChangeText={(year)=>this.year}
+          onSelect ={(value) => this.setState({year: (String(this.state.yearOptions[value]))})}
           />
 
+
           <TouchableOpacity  style = { styles.signup }  
-                            onPress={()=> this.signUpUser(this.state.email,this.state.password)}> 
+                            onPress={()=> this.checkValidation()}> 
                          
             <Text style = { styles.textStyle}>Sign Up</Text>
           </TouchableOpacity>
