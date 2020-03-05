@@ -18,22 +18,6 @@ import { Card } from 'native-base';
 
 
 
-const firebaseConfig = {
-
-  apiKey: "AIzaSyDFE0pEomenVlB8-JuHcAnICYd3hQfRyOY",
-  authDomain: "internship-assistance.firebaseapp.com",
-  databaseURL: "https://internship-assistance.firebaseio.com",
-  projectId: "internship-assistance",
-  storageBucket: "internship-assistance.appspot.com",
-  
-       
-
-};
-if (!firebase.apps.length) {
-firebase.initializeApp(firebaseConfig);
-}
- 
-
 const database = firebase.database();
 //const student = database.child('student');
 
@@ -63,7 +47,7 @@ componentDidMount() {
   //   this.setState({
  let snap = JSON.stringify(snapshot)
   let data = JSON.parse(snap)
- 
+ console.log(data)
   //console.log( Registrationdetails);
  
   var studentids = Object.keys(data);

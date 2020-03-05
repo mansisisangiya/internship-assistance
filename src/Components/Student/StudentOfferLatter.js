@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, Image, Button,ImageBackground ,StyleSheet,TouchableOpacity,Alert} from 'react-native'
 import HeaderArrow from '../HeaderArrow';
 import DocumentPicker from 'react-native-document-picker';
+import * as firebase from 'firebase';
+import RNFetchBlob from 'react-native-fetch-blob'
+
+
 
 export default class StudentOfferLatter extends React.Component {
   constructor(props) {
@@ -62,39 +66,42 @@ export default class StudentOfferLatter extends React.Component {
   };
 
 
-  handleUpload =()=>{
+    handleUpload = ( currentImage) => {
     
-    console.log("In the handleUpload function..");    
-
-    fetch('http://192.168.43.170/cv/UploadImage.php', {
-          method: 'POST',
-          headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          },
-body: JSON.stringify({
- file:this.state.singleFile
- // name:this.state.singleFile.name,
-})
-}).then(console.log(
-
-JSON.stringify({
- file:this.state.singleFile
- // name:this.state.singleFile.name,
-})
-
-
-
-
-  )) .then((response) => response.json())
-.then((responseJson) => {
-// Showing response message coming from server after inserting records.
-Alert.alert(responseJson);
-}).catch((error) => {
-console.error(error);
-});
-
-  }
+      const image = this.state.singleFile.uri
+   
+      const Blob = RNFetchBlob.polyfill.Blob
+      const fs = RNFetchBlob.fs
+      window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+      window.Blob = Blob
+   
+     
+      let uploadBlob = null
+      const imageRef = firebase.storage().ref('posts')
+      let mime = 'application/pdf'
+      fs.readFile(image, 'base64')
+        .then((data) => {
+          return Blob.build(data, { type: `${mime};BASE64` })
+      })
+      .then((blob) => {
+          uploadBlob = blob
+          return imageRef.put(blob, { contentType: mime })
+        })
+        .then(() => {
+          uploadBlob.close()
+          return imageRef.getDownloadURL()
+        })
+        .then((url) => {
+          // URL of the image uploaded on Firebase storage
+          console.log(url);
+          
+        })
+        .catch((error) => {
+          console.log(error);
+   
+        })  
+   
+    }
 
 
  
@@ -114,6 +121,13 @@ console.error(error);
            <Text style={styles.filetext}>
           {this.state.singleFile.name ? this.state.singleFile.name : ''}
         </Text>
+
+         <TouchableOpacity  style = { styles.signup }  
+                            onPress={()=> this.handleUpload}> 
+                         
+            <Text style = { styles.textStyle}>Upload</Text>
+          </TouchableOpacity>
+          
         </View>
       </ImageBackground>
       </View>
@@ -155,6 +169,17 @@ const styles = StyleSheet.create({
         color:'#ffffff',
         textAlign:'center',
         marginTop:50
-    }
+    },
+    signup:{
+    height:'7%',
+    width:'100%',
+    backgroundColor:'rgba(22,160,133,0.8)',
+    borderRadius:10,
+    padding:10,
+    // justifyContent:'center' ,
+    alignItems:'center',
+    marginLeft:'35%',
+    marginTop:20
+  }, 
 
 })

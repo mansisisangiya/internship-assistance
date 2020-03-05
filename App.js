@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack'
-
+import config from './src/config';
 import Splash from './src/Components/Splash';
 import Login from './src/Components/Login';
 import Registration from './src/Components/Registration';
@@ -22,24 +22,6 @@ import TeacherhStudentStatus from './src/Components/Teacher/TeacherStudentStatus
 import TeacherCompanies from './src/Components/Teacher/TeacherCompanies';
 
 
-import * as firebase from 'firebase';
-
-
-// initialize firebbase0o
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyDFE0pEomenVlB8-JuHcAnICYd3hQfRyOY",
-    authDomain: "internship-assistance.firebaseapp.com",
-    databaseURL: "https://internship-assistance.firebaseio.com",
-    projectId: "internship-assistance",
-    storageBucket: "internship-assistance.appspot.com",
-         
-
-};
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 
 
 const RootStack = createStackNavigator(
@@ -66,7 +48,7 @@ const RootStack = createStackNavigator(
    },
   {
     //Run First
-    initialRouteName: 'Registration',
+    initialRouteName: 'StudentDashboard',
     headerMode: 'none',
   }
 );

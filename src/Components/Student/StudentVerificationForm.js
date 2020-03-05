@@ -12,7 +12,7 @@ const Name = t.subtype(t.Str, (cname) => {
 
 
 const Company_Website = t.subtype(t.Str, (cweb) => {
-  const reg =/^(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
+  const reg =/^[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
   return reg.test(cweb);
 });
 
@@ -30,6 +30,7 @@ const Email = t.subtype(t.Str, (email) => {
   const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return reg.test(email);
 });
+
 
 
 const Form = t.form.Form;
@@ -86,8 +87,7 @@ const options = {
       error: 'Only Characters allowed',
       label:'Company Name',   
       ref:'1',
-      onSubmitEditing :this.focusNextField('2')
-
+     
       },
     cweb: {
       error: 'Not Valid Website(eg."sample.com")',
@@ -190,6 +190,10 @@ const options = {
 
 export default class StudentVerificationForm extends Component {
 
+  
+
+
+
   focusNextField(nextField) {
     this.refs[nextField].focus();
   }
@@ -197,14 +201,23 @@ export default class StudentVerificationForm extends Component {
 
   handleSubmit=()=>{
     console.log("In the handlesubmit...");
-    
+    const { navigation } = this.props;  
+    const studentid = navigation.getParam('studentid', 'Nullid');  
+    console.log(studentid)
+ 
     const formdetails = this._form.getValue();  
-    console.log("value:",formdetails);   
+    console.log("value:",formdetails);  
+   
+
 
     if(formdetails!=null){ 
       
       {
-        firebase.database().ref('Student/').child(studentid).push(formdetails).then((data)=>{
+       
+        firebase.database().ref('Student/').child(studentid).push({formdetails}
+          
+          
+          ).then((data)=>{
             //success callback
             console.log('data ', data)
         }).catch((error)=>{

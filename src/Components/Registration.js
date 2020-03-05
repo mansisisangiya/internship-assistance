@@ -39,65 +39,7 @@ export default class SignUp extends React.Component {
     }
 
     
-checkValidation=()=>{
-  console.warn('in the...')
-  const {
-  email,    
-  password,
-  studentId,
-  username,
-  year,
- institute,          
-} = this.state;
 
-  let isValid = true
-  const regEmail =/^[a-zA-Z0-9]*@charusat.edu.in$/
-  const regId= ''
- 
-
-
-   if (email === "") {
-  isValid = false;
-  Alert.alert("Alert", "Please enter Email");
-}else if(regEmail.test(email)=== false && isValid){
-  isValid=false;
-  Alert.alert("Please Enter email in correct form", "eg.17dit052@charusat.edu.in" )
-}
-
-
-if (password === "" && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please enter Password");
-} else if (password.length < 8 && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please enter at least 8 character");
-}
-
-if ( studentId=== "" && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please enter ID");
-} else if(regId.test(studentId)=== false && isValid) {
-  isValid = false;
-  Alert.alert("Please Enter Id in correct form", "eg.17dit052");
-}
-
-if (username === "" && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please enter Name");
-}
-if (institute === "" && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please Select institute");
-}
-if (year=== "" && isValid) {
-  isValid = false;
-  Alert.alert("Alert", "Please enter Year");
-}
-
-if (isValid) {
-  this.signUpUser();
-}
-}    
     async signUpUser(email,password) {
     try{
       if(this.state.password.length<6)
@@ -116,16 +58,16 @@ if (isValid) {
             Alert.alert("error..") // An error happened.
 });      */
           await  firebase.auth().createUserWithEmailAndPassword(email,password)                       
-              //If a user is successfully created with an appropriate email
-              studentid = this.state.studentId;
+              //If  a user is successfully created with an appropriate email
+             let studentid = this.state.studentId
             var user = firebase.auth().currentUser
             if (firebase.auth().currentUser != null){
               user.sendEmailVerification();
               Alert.alert("check mail..")
               this.props.navigation.navigate('Login')
-             // this.props.navigation.navigate('StudentVerificationForm', {
-                //studentid
-            //  });
+              this.props.navigation.navigate('StudentVerificationForm',{
+                studentid
+             });
               console.log(studentid);
               console.log("for firebase...");
               const Registrationdetails=
@@ -133,29 +75,24 @@ if (isValid) {
                                             ,"Year":this.state.year,"Institute":this.state.institute})
 
               
-          
+
+                                               
             console.log("value:", Registrationdetails);   
          
-      {
-        firebase.database().ref('Student/').child(studentid).set(
-          {
-            Registrationdetails
-        }).then((data)=>{
-            //success callback
-            console.log('data ' , data)
-        }).catch((error)=>{
-            //error callback
-            console.log('error firebase ' , error)
-        })
-    }
-            
-              
-                
-            
-              
-    
-
-
+            {
+              firebase.database().ref('Student/').child(studentid).push(
+                {
+                  Registrationdetails
+              }).then((data)=>{
+                  //success callback
+                  console.log('data ' , data)
+              }).catch((error)=>{
+                  //error callback
+                  console.log('error firebase ' , error)
+              })
+          }
+          
+           
             }
            
             else{
@@ -249,7 +186,7 @@ if (isValid) {
 
 
           <TouchableOpacity  style = { styles.signup }  
-                            onPress={()=> this.checkValidation()}> 
+                            onPress={()=> this.signUpUser(this.state.email,this.state.password)}> 
                          
             <Text style = { styles.textStyle}>Sign Up</Text>
           </TouchableOpacity>
